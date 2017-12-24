@@ -1,0 +1,23 @@
+{
+  "name": "medication-reminder",
+  "version": "1.0.0",
+  "description": "Medication Reminder",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Haple/Medication-Reminder.git"
+  },
+  "keywords": [
+    "medication",
+    "reminder"
+  ],
+  "author": "Aleph Santos Oliveira",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Haple/Medication-Reminder/issues"
+  },
+  "homepage": "https://github.com/Haple/Medication-Reminder#readme"
+}
