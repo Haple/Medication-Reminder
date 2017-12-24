@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/Haple/Medication-Reminder/issues"
   },
-  "homepage": "https://github.com/Haple/Medication-Reminder#readme"
+  "homepage": "https://github.com/Haple/Medication-Reminder#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
 }
