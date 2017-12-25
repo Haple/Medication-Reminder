@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>MY APP</title>
+    <title>Medication Reminder</title>
 </head>
 
 <body>
@@ -12,8 +12,9 @@
     <ul class="medications">
         <% for(var i=0; i<medications.length; i++) {%>
           <li class="medication">
-            <span><%= medication[i].medication %></span>
-            <span><%= medication[i].time %></span>
+            <span><%= medications[i].medication %></span>
+            <span> at </span>
+            <span><%= medications[i].time %></span>
           </li>
         <% } %>
     </ul>
