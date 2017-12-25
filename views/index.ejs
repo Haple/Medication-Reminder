@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MY APP</title>
+</head>
+
+<body>
+    Remember when to take your medication.
+
+    <ul class="medications">
+        <% for(var i=0; i<medications.length; i++) {%>
+          <li class="medication">
+            <span><%= medication[i].medication %></span>
+            <span><%= medication[i].time %></span>
+          </li>
+        <% } %>
+    </ul>
+
+    <form action="/medications" method="POST">
+        <input type="text" placeholder="medication" name="medication">
+        <input type="text" placeholder="time" name="time">
+        <button type="submit">Save</button>
+    </form>
+
+</body>
+
+</html>
