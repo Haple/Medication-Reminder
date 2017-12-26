@@ -17,6 +17,10 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.set('view engine', 'ejs')
 
+app.use(express.static('public'))
+
+app.use(bodyParser.json())
+
 app.get('/', (req, res) => {
     db.db('medication-reminder').collection('medications').find().toArray((err, result) => {
         if (err) return console.log(err)
@@ -33,3 +37,11 @@ app.post('/medications', (req, res) => {
         res.redirect('/')
     })
 })
+
+app.delete('/medications', (req, res) => {  
+    db.db('medication-reminder').collection('medications').findOneAndDelete({ medication: req.body.del_medication},
+    (err, result) => {
+      if (err) {return res.status(500).send(err)}
+      res.send({message: 'A medication was deleted'})
+    })
+  })

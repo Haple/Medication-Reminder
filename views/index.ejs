@@ -15,6 +15,7 @@
             <span><%= medications[i].medication %></span>
             <span> at </span>
             <span><%= medications[i].time %></span>
+            <button class="delete"  onclick="deleteMedication(this.value)" value='<%= medications[i].medication %>'> Forget </button>
           </li>
         <% } %>
     </ul>
@@ -24,6 +25,8 @@
         <input type="text" placeholder="time" name="time">
         <button type="submit">Save</button>
     </form>
+    
+    <script src="main.js"></script>
 
 </body>
 
