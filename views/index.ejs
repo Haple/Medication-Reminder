@@ -4,28 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <title>Medication Reminder</title>
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+    <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 
 <body>
-    Remember when to take your medication.
 
-    <ul class="medications">
+    <ons-list>
+        <ons-list-header>Remember when to take your medication.</ons-list-header>
+      
+        <form action="/medications" method="POST">
+
+            <div style="text-align: center; margin-top: 30px;">
+                <p>
+                    <input class="text-input text-input--material" placeholder="Medication" type="text" name="medication" required>
+                </p>
+                <p>
+                    <input class="text-input text-input--material" placeholder="Time" type="text" name="time" required>
+                </p>
+                <p style="margin-top: 30px;">
+                    <button class="button button--outline" type="submit">Save</button>
+                </p>
+            </div>
+        </form>
+      
         <% for(var i=0; i<medications.length; i++) {%>
-          <li class="medication">
-            <span><%= medications[i].medication %></span>
-            <span> at </span>
-            <span><%= medications[i].time %></span>
-            <button class="delete"  onclick="deleteMedication(this.value)" value='<%= medications[i].medication %>'> Forget </button>
-          </li>
-        <% } %>
-    </ul>
 
-    <form action="/medications" method="POST">
-        <input type="text" placeholder="medication" name="medication">
-        <input type="text" placeholder="time" name="time">
-        <button type="submit">Save</button>
-    </form>
-    
+            <ons-list-item>
+
+                <div class="list-item__center list-item--material__center">
+                    <div class="list-item__title list-item--material__title">
+                        <%= medications[i].medication %>
+                    </div>
+                    <div class="list-item__subtitle list-item--material__subtitle">
+                        <%= medications[i].time %>
+                    </div>
+                </div>
+
+                <div class="list-item__right list-item--material__right">
+                    <button class="delete button button--outline" onclick="deleteMedication(this.value)" value='<%= medications[i].medication %>'>
+                        Forget </button>
+                </div>
+            </ons-list-item>
+
+            <% } %>
+    </ons-list>
+
+
     <script src="main.js"></script>
 
 </body>
