@@ -1,4 +1,4 @@
-# Medication Reminder - in development process
+# Medication Reminder
 
 ![ProjectScreenshot](https://raw.githubusercontent.com/Haple/Medication-Reminder/master/Screenshot.png)
 
