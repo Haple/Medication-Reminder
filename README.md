@@ -1,1 +1,10 @@
-"# Medication-Reminder" 
+# Medication Reminder - in development process
+
+![ProjectScreenshot](https://raw.githubusercontent.com/Haple/Medication-Reminder/master/Screenshot.png)
+
+> Medication Reminder is a web application for keep track of your medication time.
+
+# Main Tools
+- MongoDB (as database);
+- Express.JS (as server);
+- Node.JS.
