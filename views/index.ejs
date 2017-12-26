@@ -12,45 +12,74 @@
 
 <body>
 
-    <ons-list>
-        <ons-list-header>Remember when to take your medication.</ons-list-header>
+    <ons-page>
 
-        <form action="/medications" method="POST">
+        <ons-toolbar>
+            <div class="center">Medication Reminder</div>
+            <div class="right">
 
-            <div style="text-align: center; margin-top: 30px;">
-                <p>
-                    <input class="text-input text-input--material" placeholder="Medication" type="text" name="medication" required>
-                </p>
-                <p>
-                    <input class="text-input text-input--material" placeholder="Time" type="text" name="time" required>
-                </p>
-                <p style="margin-top: 30px;">
-                    <button class="button button--outline" type="submit">Save</button>
-                </p>
             </div>
-        </form>
+        </ons-toolbar>
 
-        <% for(var i=0; i<medications.length; i++) {%>
+        <ons-tabbar swipeable position="auto">
+            <ons-tab page="tab1.html" label="Reminders" icon="fa-heartbeat" active>
+            </ons-tab>
+            <ons-tab page="tab2.html" label="Settings" icon="md-settings">
+            </ons-tab>
+        </ons-tabbar>
 
-            <ons-list-item>
+    </ons-page>
 
-                <div class="list-item__center list-item--material__center">
-                    <div class="list-item__title list-item--material__title">
-                        <%= medications[i].medication %>
-                    </div>
-                    <div class="list-item__subtitle list-item--material__subtitle">
-                        <%= medications[i].time %>
-                    </div>
+    <template id="tab1.html">
+        <ons-page id="Tab1">
+            <form action="/medications" method="POST">
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <p>
+                        <input class="text-input text-input--material" placeholder="Medication" type="text" name="medication" required>
+                    </p>
+                    <p>
+                        <input class="text-input text-input--material" placeholder="Time" type="text" name="time" required>
+                    </p>
+                    <p style="margin-top: 30px;">
+                        <button class="button" type="submit">Save Reminder</button>
+                    </p>
                 </div>
+            </form>
 
-                <div class="list-item__right list-item--material__right">
-                    <button class="delete button button--outline" onclick="deleteMedication(this.value)" value='<%= medications[i].medication %>'>
-                        Forget </button>
-                </div>
-            </ons-list-item>
+            <ons-list>
 
-            <% } %>
-    </ons-list>
+                <% for(var i=0; i<medications.length; i++) {%>
+
+                    <ons-list-item>
+
+                        <div class="list-item__center list-item--material__center">
+                            <div class="list-item__title list-item--material__title">
+                                <%= medications[i].medication %>
+                            </div>
+                            <div class="list-item__subtitle list-item--material__subtitle">
+                                <%= medications[i].time %>
+                            </div>
+                        </div>
+
+                        <div class="list-item__right list-item--material__right">
+                            <button class="delete button button--outline" onclick="deleteMedication(this.value)" value='<%= medications[i].medication %>'>
+                                Forget </button>
+                        </div>
+                    </ons-list-item>
+
+                    <% } %>
+            </ons-list>
+        </ons-page>
+    </template>
+
+    <template id="tab2.html">
+        <ons-page id="Tab2">
+            <p style="text-align: center;">
+                <!-- TODO user-->
+            </p>
+        </ons-page>
+    </template>
 
 
     <script src="main.js"></script>
