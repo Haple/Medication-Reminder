@@ -2,9 +2,10 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
 const MongoClient = require('mongodb').MongoClient
-var mongoose = require('mongoose');
-var session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
+const session = require('express-session')
+var MongoDBStore = require('connect-mongodb-session')(session)
+var bcrypt = require('bcrypt')
+
 
 var db
 
@@ -18,15 +19,37 @@ MongoClient.connect('mongodb://doctor:doctor3467@ds131687.mlab.com:31687/medicat
     })
 })
 
-//use sessions for tracking logins
+/*/use sessions for tracking logins
 app.use(session({
     secret: 'work hard',
     resave: true,
     saveUninitialized: false,
-    store: new MongoStore({
-      db: db
+    store: new MongoDBStore({
+        url: 'mongodb://doctor:doctor3467@ds131687.mlab.com:31687/medication-reminder'
     })
-  }))
+}))
+*/
+var store = new MongoDBStore(
+    {
+        uri: 'mongodb://doctor:doctor3467@ds131687.mlab.com:31687/medication-reminder',
+        collection: 'mySessions'
+    });
+
+// Catch errors
+store.on('error', function (error) {
+    assert.ifError(error);
+    assert.ok(false);
+});
+
+app.use(require('express-session')({
+    secret: 'This is a secret',
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+    },
+    store: store,
+    resave: true,
+    saveUninitialized: true
+}));
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -42,7 +65,7 @@ app.get('/', (req, res) => {
     db.db('medication-reminder').collection('medications').find().toArray((err, result) => {
         if (err) return console.log(err)
         // renders index.ejs
-        res.render('index.ejs', { medications: result })
+        res.render('index.ejs', { medications: result, user: null })
     })
 })
 
@@ -68,10 +91,7 @@ app.delete('/medications', (req, res) => {
 app.post('/', (req, res) => {
     // confirm that user typed same password twice
     if (req.body.password !== req.body.passwordConf) {
-        var err = new Error('Passwords do not match.');
-        err.status = 400;
-        res.send("passwords dont match");
-        return next(err);
+        return res.status(400).send('Passwords do not match.')
     }
 
     if (req.body.email &&
@@ -82,15 +102,14 @@ app.post('/', (req, res) => {
         var userData = {
             email: req.body.email,
             username: req.body.username,
-            password: req.body.password,
-            passwordConf: req.body.passwordConf,
+            password: req.body.password
         }
 
         db.db('medication-reminder').collection('users').save(userData, (err, result) => {
             if (err) {
                 return res.status(500).send(err)
             } else {
-                req.session.userId = user._id
+                req.session.userId = result.id
                 res.redirect('/')
             }
         })
@@ -100,14 +119,16 @@ app.post('/', (req, res) => {
 
             if (err) { return res.status(500).send(err) }
             else if (!result) { return res.status(401).send(err) }
-            bcrypt.compare(req.body.logpassword, result.password, function (err, result) {
-                if (result === true) {
-                    req.session.userId = user._id
-                    res.redirect('/profile')
-                } else {
-                    return res.status(500).send(err)
-                }
-            })
+
+            if (req.body.logpassword == result.password) {
+                var userId = result._id
+                console.log(userId)
+                req.session.userId = userId
+                res.redirect('/profile')
+            } else {
+                return res.status(500).send(err)
+            }
+
         })
 
     } else {
@@ -117,14 +138,21 @@ app.post('/', (req, res) => {
 
 app.get('/profile', (req, res) => {
 
-    db.db('medication-reminder').collection('medications').findOne({ _id: req.session.userId },
+    db.db('medication-reminder').collection('users').findOne({"_id": req.session.userId },
         (err, result) => {
+            
             if (err) { return res.status(500).send(err) }
             else {
                 if (result === null) {
                     return res.status(400).send('Not authorized! Go back!')
                 } else {
-                    return res.send('<h1>Name: </h1>' + user.username + '<h2>Mail: </h2>' + user.email + '<br><a type="button" href="/logout">Logout</a>')
+                    var userDocument = result
+                    console.log(userDocument)
+                    var userData = {
+                        username: userDocument.username,
+                        email: userDocument.email
+                    }
+                    return res.render('index.ejs', { user: userData, medications: {medication:"", time:""}})
                 }
             }
         })
