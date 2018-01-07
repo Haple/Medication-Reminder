@@ -62,28 +62,45 @@ app.use(bodyParser.json())
 
 //Routes for Medications
 app.get('/', (req, res) => {
-    db.db('medication-reminder').collection('medications').find().toArray((err, result) => {
+    /*
+    db.db('medication-reminder').collection('medications').find({ "userId": req.session.userId }).toArray((err, result) => {
         if (err) return console.log(err)
         // renders index.ejs
-        res.render('index.ejs', { medications: result, user: null })
-    })
+        
+    }) */
+
+    res.render('login.ejs')
 })
 
 app.post('/medications', (req, res) => {
-    db.db('medication-reminder').collection('medications').save(req.body, (err, result) => {
+    /*
+    db.db('medication-reminder').collection('users').update({ "_id": req.session.userId }, { $push: { "medications": req.body } }, (err, result) => {
         if (err) return console.log(err)
 
         console.log('saved to database')
         res.redirect('/')
+    }) */
+
+    var medication = req.body
+
+    medication["userId"] = req.session.userId
+
+    db.db('medication-reminder').collection('medications').save(medication, (err, result) => {
+        if (err) return console.log(err)
+
+        console.log('saved to database')
+        res.redirect('/profile')
     })
+
 })
 
 app.delete('/medications', (req, res) => {
-    db.db('medication-reminder').collection('medications').findOneAndDelete({ medication: req.body.del_medication },
-        (err, result) => {
-            if (err) { return res.status(500).send(err) }
-            res.send({ message: 'A medication was deleted' })
-        })
+
+    db.db('medication-reminder').collection('users').update({ "_id": req.session.userId }, { $pull: { "medications": req.body.del_medication } }, (err, result) => {
+        if (err) { return res.status(500).send(err) }
+        res.send({ message: 'A medication was deleted' })
+        res.redirect('/profile')
+    })
 })
 //End of routes for medication
 
@@ -102,7 +119,8 @@ app.post('/', (req, res) => {
         var userData = {
             email: req.body.email,
             username: req.body.username,
-            password: req.body.password
+            password: req.body.password,
+            medications: []
         }
 
         db.db('medication-reminder').collection('users').save(userData, (err, result) => {
@@ -118,7 +136,9 @@ app.post('/', (req, res) => {
         db.db('medication-reminder').collection('users').findOne({ email: req.body.logemail }, (err, result) => {
 
             if (err) { return res.status(500).send(err) }
-            else if (!result) { return res.status(401).send(err) }
+            else if (!result) { 
+                return res.status(401).send(err) 
+            }
 
             if (req.body.logpassword == result.password) {
                 var userId = result._id
@@ -138,24 +158,74 @@ app.post('/', (req, res) => {
 
 app.get('/profile', (req, res) => {
 
-    db.db('medication-reminder').collection('users').findOne({"_id": req.session.userId },
-        (err, result) => {
+    var userData = {}
+    var medications = {}
+
+    /*
+    db.db('medication-reminder').collection('users').find({ "_id": req.session.userId }).toArray().then(result => {
+        if (result === null) {
+            return res.status(400).send('Not authorized! Go back!')
+        } else {
+            var userDocument = result
+            userData = {
+                username: userDocument.username,
+                email: userDocument.email
+            }
             
+        }
+    }).then(() => {
+        
+        Promise.resolve(db.db('medication-reminder').collection('medications').find({ "userId": req.session.userId }).toArray((err, result) => {
+
+            if (result === null) {
+                return res.status(400).send('Not authorized! Go back!')
+            } else {
+                var medications = result
+
+                //return res.render('index.ejs', { user: userData, medications: medications })
+            }
+        }))
+        
+    }).then(() => {
+        return res.render('index.ejs', { user: userData, medications: medications })
+    }).catch(e => {
+        console.error(e);
+    }); */
+
+    
+    db.db('medication-reminder').collection('users').findOne({ "_id": req.session.userId },
+        (err, result) => {
+
             if (err) { return res.status(500).send(err) }
             else {
                 if (result === null) {
                     return res.status(400).send('Not authorized! Go back!')
                 } else {
                     var userDocument = result
-                    console.log(userDocument)
-                    var userData = {
+                    userData = {
                         username: userDocument.username,
                         email: userDocument.email
                     }
-                    return res.render('index.ejs', { user: userData, medications: {medication:"", time:""}})
+                    //return res.render('index.ejs', { user: userData, medications: medications })
                 }
             }
+
         })
+
+    db.db('medication-reminder').collection('medications').find({ "userId": req.session.userId }).toArray((err, result) => {
+
+        if (err) { return res.status(500).send(err) }
+        else {
+            if (result === null) {
+                return res.status(400).send('Not authorized! Go back!')
+            } else {
+                var medications = result
+
+                return res.render('index.ejs', { user: userData, medications: medications })
+            }
+        }
+    })
+
 })
 
 app.get('/logout', (req, res) => {
