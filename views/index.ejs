@@ -47,37 +47,67 @@
                 </div>
             </form>
 
-            <ons-list>
+            <% if (medications) { %>
+                <ons-list>
 
-                <% for(var i=0; i<medications.length; i++) {%>
+                    <% for(var i=0; i<medications.length; i++) {%>
 
-                    <ons-list-item>
+                        <ons-list-item>
 
-                        <div class="list-item__center list-item--material__center">
-                            <div class="list-item__title list-item--material__title">
-                                <%= medications[i].medication %>
+                            <div class="list-item__center list-item--material__center">
+                                <div class="list-item__title list-item--material__title">
+                                    <%= medications[i].medication %>
+                                </div>
+                                <div class="list-item__subtitle list-item--material__subtitle">
+                                    <%= medications[i].time %>
+                                </div>
                             </div>
-                            <div class="list-item__subtitle list-item--material__subtitle">
-                                <%= medications[i].time %>
+
+                            <div class="list-item__right list-item--material__right">
+                                <button class="delete button button--outline" onclick="deleteMedication(this.value)" value='<%= medications[i]._id %>' alt='<%= medications[i].userId %>'>
+                                    Forget </button>
                             </div>
-                        </div>
+                        </ons-list-item>
 
-                        <div class="list-item__right list-item--material__right">
-                            <button class="delete button button--outline" onclick="deleteMedication(this.value)" value='<%= medications[i].medication %>'>
-                                Forget </button>
-                        </div>
-                    </ons-list-item>
+                        <% } %>
+                </ons-list>
+                <% } %>
 
-                    <% } %>
-            </ons-list>
+
         </ons-page>
     </template>
 
     <template id="tab2.html">
         <ons-page id="Tab2">
-            <p style="text-align: center;">
-                TODO implements user authentication
-            </p>
+
+            <center>
+                <h3 style="margin: 30px; text-align:center; color:lightgray"><i>"An apple a day, keeps the doctor away."</i></h3>
+            </center>
+            <ons-list>
+                <ons-list-item>
+                    <div class="center">
+                        Username:
+                    </div>
+                    <div class="right">
+                        <%= user.username %>
+                    </div>
+                </ons-list-item>
+
+                <ons-list-item>
+                    <div class="center">
+                        E-mail:
+                    </div>
+                    <div class="right">
+                        <%= user.email  %>
+                    </div>
+                </ons-list-item>
+                <a class="button--large--cta" type="button" href="/logout">Logout</a>
+            </ons-list>
+
+            <br/>
+            
+
+
         </ons-page>
     </template>
 
