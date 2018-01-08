@@ -2,8 +2,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
 const MongoClient = require('mongodb').MongoClient
-var ObjectId = require('mongodb').ObjectID
 const session = require('express-session')
+var ObjectId = require('mongodb').ObjectID
 var MongoDBStore = require('connect-mongodb-session')(session)
 
 var db
@@ -33,7 +33,7 @@ store.on('error', function (error) {
 app.use(require('express-session')({
     secret: 'This is a secret',
     cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+        maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week in miliseconds
     },
     store: store,
     resave: true,
@@ -72,7 +72,7 @@ app.post('/medications', (req, res) => {
 })
 //  
 app.delete('/medications', (req, res) => {  
-    console.log("pls, delete this medication: "+req.body.del_medication)
+    //console.log("pls, delete this medication: "+req.body.del_medication)
     db.db('medication-reminder').collection('medications').deleteOne({ _id:  new ObjectId(req.body.del_medication) },
     (err, result) => {
       if (err) {return res.status(500).send(err)}
