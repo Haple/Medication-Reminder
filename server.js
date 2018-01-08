@@ -52,7 +52,26 @@ app.use(bodyParser.json())
 //Routes for Medications
 app.get('/', (req, res) => {
 
-    res.render('login.ejs')
+    if (req.session.userId == null) {
+        return res.render('login.ejs')
+    } else {
+        return res.redirect('/profile')  
+    }
+/*
+    db.db('medication-reminder').collection('users').findOne({ "_id": req.session.userId },
+        (err, result) => {
+
+            if (err) { return res.status(500).send(err) }
+            else {
+                if (result === null) {
+                    return res.render('login.ejs')
+                } else {
+                    return res.redirect('/profile')  
+                }
+            }
+
+        })
+        */
 })
 
 app.post('/medications', (req, res) => {

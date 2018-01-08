@@ -71,21 +71,42 @@
 
                         <% } %>
                 </ons-list>
-                <% } else { %>
-                    <h2>You should login in the settings bar first</h2>
-                    <% } %>
+                <% } %>
+
+
         </ons-page>
     </template>
 
     <template id="tab2.html">
         <ons-page id="Tab2">
-            <% if (user) { %>
-                <h1>Name: </h1> <%= user.username %>
-                <h2>Mail: </h2> <%= user.email  %><br/>
-                <a type="button" href="/logout">Logout</a>
-            <% } else { %>
 
-            <% } %>
+            <center>
+                <h3 style="margin: 30px; text-align:center; color:lightgray"><i>"An apple a day, keeps the doctor away."</i></h3>
+            </center>
+            <ons-list>
+                <ons-list-item>
+                    <div class="center">
+                        Username:
+                    </div>
+                    <div class="right">
+                        <%= user.username %>
+                    </div>
+                </ons-list-item>
+
+                <ons-list-item>
+                    <div class="center">
+                        E-mail:
+                    </div>
+                    <div class="right">
+                        <%= user.email  %>
+                    </div>
+                </ons-list-item>
+                <a class="button--large--cta" type="button" href="/logout">Logout</a>
+            </ons-list>
+
+            <br/>
+            
+
 
         </ons-page>
     </template>
