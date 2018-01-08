@@ -64,7 +64,7 @@
                             </div>
 
                             <div class="list-item__right list-item--material__right">
-                                <button class="delete button button--outline" onclick="deleteMedication(this.value)" value='<%= medications[i].medication %>'>
+                                <button class="delete button button--outline" onclick="deleteMedication(this.value)" value='<%= medications[i]._id %>' alt='<%= medications[i].userId %>'>
                                     Forget </button>
                             </div>
                         </ons-list-item>

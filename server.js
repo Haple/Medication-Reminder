@@ -2,10 +2,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
 const MongoClient = require('mongodb').MongoClient
+var ObjectId = require('mongodb').ObjectID
 const session = require('express-session')
 var MongoDBStore = require('connect-mongodb-session')(session)
-var bcrypt = require('bcrypt')
-
 
 var db
 
@@ -19,16 +18,6 @@ MongoClient.connect('mongodb://doctor:doctor3467@ds131687.mlab.com:31687/medicat
     })
 })
 
-/*/use sessions for tracking logins
-app.use(session({
-    secret: 'work hard',
-    resave: true,
-    saveUninitialized: false,
-    store: new MongoDBStore({
-        url: 'mongodb://doctor:doctor3467@ds131687.mlab.com:31687/medication-reminder'
-    })
-}))
-*/
 var store = new MongoDBStore(
     {
         uri: 'mongodb://doctor:doctor3467@ds131687.mlab.com:31687/medication-reminder',
@@ -62,27 +51,15 @@ app.use(bodyParser.json())
 
 //Routes for Medications
 app.get('/', (req, res) => {
-    /*
-    db.db('medication-reminder').collection('medications').find({ "userId": req.session.userId }).toArray((err, result) => {
-        if (err) return console.log(err)
-        // renders index.ejs
-        
-    }) */
 
     res.render('login.ejs')
 })
 
 app.post('/medications', (req, res) => {
-    /*
-    db.db('medication-reminder').collection('users').update({ "_id": req.session.userId }, { $push: { "medications": req.body } }, (err, result) => {
-        if (err) return console.log(err)
-
-        console.log('saved to database')
-        res.redirect('/')
-    }) */
 
     var medication = req.body
 
+    console.log("Medication created! User: " + req.session.userId)
     medication["userId"] = req.session.userId
 
     db.db('medication-reminder').collection('medications').save(medication, (err, result) => {
@@ -93,15 +70,16 @@ app.post('/medications', (req, res) => {
     })
 
 })
-
-app.delete('/medications', (req, res) => {
-
-    db.db('medication-reminder').collection('users').update({ "_id": req.session.userId }, { $pull: { "medications": req.body.del_medication } }, (err, result) => {
-        if (err) { return res.status(500).send(err) }
-        res.send({ message: 'A medication was deleted' })
-        res.redirect('/profile')
+//  
+app.delete('/medications', (req, res) => {  
+    console.log("pls, delete this medication: "+req.body.del_medication)
+    db.db('medication-reminder').collection('medications').deleteOne({ _id:  new ObjectId(req.body.del_medication) },
+    (err, result) => {
+      if (err) {return res.status(500).send(err)}
+      return res.redirect('/profile')
     })
-})
+  })
+
 //End of routes for medication
 
 //Routes for user authentication
@@ -136,8 +114,8 @@ app.post('/', (req, res) => {
         db.db('medication-reminder').collection('users').findOne({ email: req.body.logemail }, (err, result) => {
 
             if (err) { return res.status(500).send(err) }
-            else if (!result) { 
-                return res.status(401).send(err) 
+            else if (!result) {
+                return res.status(401).send(err)
             }
 
             if (req.body.logpassword == result.password) {
@@ -161,38 +139,6 @@ app.get('/profile', (req, res) => {
     var userData = {}
     var medications = {}
 
-    /*
-    db.db('medication-reminder').collection('users').find({ "_id": req.session.userId }).toArray().then(result => {
-        if (result === null) {
-            return res.status(400).send('Not authorized! Go back!')
-        } else {
-            var userDocument = result
-            userData = {
-                username: userDocument.username,
-                email: userDocument.email
-            }
-            
-        }
-    }).then(() => {
-        
-        Promise.resolve(db.db('medication-reminder').collection('medications').find({ "userId": req.session.userId }).toArray((err, result) => {
-
-            if (result === null) {
-                return res.status(400).send('Not authorized! Go back!')
-            } else {
-                var medications = result
-
-                //return res.render('index.ejs', { user: userData, medications: medications })
-            }
-        }))
-        
-    }).then(() => {
-        return res.render('index.ejs', { user: userData, medications: medications })
-    }).catch(e => {
-        console.error(e);
-    }); */
-
-    
     db.db('medication-reminder').collection('users').findOne({ "_id": req.session.userId },
         (err, result) => {
 
@@ -206,7 +152,6 @@ app.get('/profile', (req, res) => {
                         username: userDocument.username,
                         email: userDocument.email
                     }
-                    //return res.render('index.ejs', { user: userData, medications: medications })
                 }
             }
 
