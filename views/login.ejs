@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Medication Reminder</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
     <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
     <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
@@ -31,9 +32,10 @@
 
     <template id="member.html">
         <ons-page id="Tab1">
-            <p style="margin-top:0em ;text-align: center;">
- 
-                <form action="/" method="POST">
+            
+            <p style="margin-top:2em ;text-align: center;">
+                    <img class="image" src="logo.png" width="70%" height="auto">
+                <form action="/" method="POST" style="margin-top:2em;">
                     <ons-list>
                         <ons-list-item>
                             <div class="center">
@@ -89,6 +91,7 @@
         </ons-page>
     </template>
 
+    <script src='sw.js'></script>
 </body>
 
 </html>

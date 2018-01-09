@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Medication Reminder</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
     <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
     <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
@@ -81,7 +82,10 @@
         <ons-page id="Tab2">
 
             <center>
-                <h3 style="margin: 30px; text-align:center; color:lightgray"><i>"An apple a day, keeps the doctor away."</i></h3>
+                <h3 style="margin: 30px; text-align:center; color:lightgray">
+                    <!--<i>"An apple a day, keeps the doctor away."</i>-->
+                    <img class="image" src="logo.png" width="70%" height="auto">
+                </h3>
             </center>
             <ons-list>
                 <ons-list-item>
@@ -105,13 +109,13 @@
             </ons-list>
 
             <br/>
-            
+
 
 
         </ons-page>
     </template>
 
-
+    <script src='sw.js'></script>
     <script src="main.js"></script>
 
 </body>

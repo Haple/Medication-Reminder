@@ -1,0 +1,11 @@
+{
+  "lang": "en",
+  "dir": "ltr",
+  "name": "Medication Reminder",
+  "short_name": "Medication Reminder",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "natural"
+}
