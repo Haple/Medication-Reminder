@@ -4,7 +4,7 @@ var cacheName = 'cache-v4';
 //Files to save in cache
 var files = [
   './',
-  './index.html', //SW treats query string as new request
+  './favicon.ico', //SW treats query string as new request
   'https://unpkg.com/onsenui/css/onsenui.css', //caching 3rd party content
   'https://unpkg.com/onsenui/css/onsen-css-components.min.css', //caching 3rd party content
   'https://unpkg.com/onsenui/js/onsenui.min.js', //caching 3rd party content
