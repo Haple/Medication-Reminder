@@ -8,8 +8,8 @@
   "start_url": "/",
   "icons": [
     {
-      "src": "images/icons/icon-384x384.png",
-      "sizes": "384x384",
+      "src": "images/icons/icon-192x192.png",
+      "sizes": "192x192",
       "type": "image/png"
     },
     {
@@ -38,8 +38,8 @@
       "type": "image/png"
     },
     {
-      "src": "images/icons/icon-192x192.png",
-      "sizes": "192x192",
+      "src": "images/icons/icon-384x384.png",
+      "sizes": "384x384",
       "type": "image/png"
     },
     {
