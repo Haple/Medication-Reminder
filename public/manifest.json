@@ -1,0 +1,22 @@
+{
+  "name": "Medication Reminder",
+  "short_name": "Medication Reminder",
+  "description": "Keep track of your medications.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [{
+      "src": "./logo.png",
+      "type": "image/png"
+    }],
+  "author": {
+    "name": "Aleph Santos Oliveira",
+    "website": "https://haple.github.io",
+    "github": "https://github.com/Haple",
+    "source-repo": "https://github.com/Haple/Medication-Reminder"
+  },
+  "gcm_sender_id": "847244712742",
+  "gcm_user_visible_only": true
+}
