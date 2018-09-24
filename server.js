@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const app = express()
 const MongoClient = require('mongodb').MongoClient
 const session = require('express-session')
+const bcrypt = require('bcrypt')
 var ObjectId = require('mongodb').ObjectID
 var MongoDBStore = require('connect-mongodb-session')(session)
 
@@ -55,23 +56,23 @@ app.get('/', (req, res) => {
     if (req.session.userId == null) {
         return res.render('login.ejs')
     } else {
-        return res.redirect('/profile')  
+        return res.redirect('/profile')
     }
-/*
-    db.db('medication-reminder').collection('users').findOne({ "_id": req.session.userId },
-        (err, result) => {
-
-            if (err) { return res.status(500).send(err) }
-            else {
-                if (result === null) {
-                    return res.render('login.ejs')
-                } else {
-                    return res.redirect('/profile')  
+    /*
+        db.db('medication-reminder').collection('users').findOne({ "_id": req.session.userId },
+            (err, result) => {
+    
+                if (err) { return res.status(500).send(err) }
+                else {
+                    if (result === null) {
+                        return res.render('login.ejs')
+                    } else {
+                        return res.redirect('/profile')  
+                    }
                 }
-            }
-
-        })
-        */
+    
+            })
+            */
 })
 
 app.post('/medications', (req, res) => {
@@ -90,16 +91,47 @@ app.post('/medications', (req, res) => {
 
 })
 //  
-app.delete('/medications', (req, res) => {  
+app.delete('/medications', (req, res) => {
     //console.log("pls, delete this medication: "+req.body.del_medication)
-    db.db('medication-reminder').collection('medications').deleteOne({ _id:  new ObjectId(req.body.del_medication) },
-    (err, result) => {
-      if (err) {return res.status(500).send(err)}
-      return res.redirect('/profile')
-    })
-  })
+    db.db('medication-reminder').collection('medications').deleteOne({ _id: new ObjectId(req.body.del_medication) },
+        (err, result) => {
+            if (err) { return res.status(500).send(err) }
+            return res.redirect('/profile')
+        })
+})
+
+app.delete('/users', (req, res) => {
+    // console.log("pls, delete this user: "+req.body.del_user)
+    db.db('medication-reminder').collection('users').deleteOne({ _id: new ObjectId(req.body.del_user) },
+        (err, result) => {
+            if (err) { return res.status(500).send(err) }
+            return res.redirect('/profile')
+        })
+})
 
 //End of routes for medication
+app.post('/register', (req, res) => {
+    if (req.body.password !== req.body.passwordConf) {
+        return res.status(400).send('Passwords do not match.')
+    }
+    var userData = {
+        email: req.body.email,
+        username: req.body.username,
+        cpf: req.body.cpf,
+        rg: req.body.rg,
+        password: bcrypt.hashSync(req.body.password, 10),
+        perfil: req.body.perfil ? req.body.perfil : "1", //trocar para 2(user default)
+        medications: []
+    }
+    db.db('medication-reminder').collection('users').save(userData, (err, result) => {
+        if (err) {
+            return res.status(500).send(err)
+        } else {
+            req.session.userId = result.id
+            res.redirect('/')
+        }
+    })
+})
 
 //Routes for user authentication
 app.post('/', (req, res) => {
@@ -107,29 +139,7 @@ app.post('/', (req, res) => {
     if (req.body.password !== req.body.passwordConf) {
         return res.status(400).send('Passwords do not match.')
     }
-
-    if (req.body.email &&
-        req.body.username &&
-        req.body.password &&
-        req.body.passwordConf) {
-
-        var userData = {
-            email: req.body.email,
-            username: req.body.username,
-            password: req.body.password,
-            medications: []
-        }
-
-        db.db('medication-reminder').collection('users').save(userData, (err, result) => {
-            if (err) {
-                return res.status(500).send(err)
-            } else {
-                req.session.userId = result.id
-                res.redirect('/')
-            }
-        })
-
-    } else if (req.body.logemail && req.body.logpassword) {
+    if (req.body.logemail && req.body.logpassword) {
         db.db('medication-reminder').collection('users').findOne({ email: req.body.logemail }, (err, result) => {
 
             if (err) { return res.status(500).send(err) }
@@ -137,7 +147,7 @@ app.post('/', (req, res) => {
                 return res.status(401).send(err)
             }
 
-            if (req.body.logpassword == result.password) {
+            if (bcrypt.compareSync(req.body.logpassword, result.password)) {
                 var userId = result._id
                 console.log(userId)
                 req.session.userId = userId
@@ -157,6 +167,7 @@ app.get('/profile', (req, res) => {
 
     var userData = {}
     var medications = {}
+    var usersList = {}
 
     db.db('medication-reminder').collection('users').findOne({ "_id": req.session.userId },
         (err, result) => {
@@ -169,12 +180,19 @@ app.get('/profile', (req, res) => {
                     var userDocument = result
                     userData = {
                         username: userDocument.username,
-                        email: userDocument.email
+                        email: userDocument.email,
+                        perfil: userDocument.perfil
                     }
                 }
             }
 
         })
+
+    db.db('medication-reminder').collection('users').find().toArray((err, result) => {
+
+        if (err) { return res.status(500).send(err) }
+        usersList = result
+    })
 
     db.db('medication-reminder').collection('medications').find({ "userId": req.session.userId }).toArray((err, result) => {
 
@@ -185,7 +203,7 @@ app.get('/profile', (req, res) => {
             } else {
                 var medications = result
 
-                return res.render('index.ejs', { user: userData, medications: medications })
+                return res.render('index.ejs', { user: userData, medications: medications, users: usersList })
             }
         }
     })
