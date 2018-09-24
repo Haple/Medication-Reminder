@@ -26,8 +26,18 @@
         <ons-tabbar swipeable position="auto">
             <ons-tab page="tab1.html" label="Reminders" icon="fa-heartbeat" active>
             </ons-tab>
+            <!-- Normal user -->
+            <% if (user.perfil === "2") { %> 
             <ons-tab page="tab2.html" label="Settings" icon="md-settings">
             </ons-tab>
+            <% } %>
+            <!-- Admin user -->
+            <% if (user.perfil === "1") { %>
+            <ons-tab page="tab3.html" label="Register" icon="fa-plus-circle">
+            </ons-tab>
+            <ons-tab page="tab4.html" label="Users" icon="fa-users">
+            </ons-tab>
+            <% } %>
         </ons-tabbar>
 
     </ons-page>
@@ -38,10 +48,12 @@
 
                 <div style="text-align: center; margin-top: 30px;">
                     <p>
-                        <input class="text-input text-input--material" placeholder="Medication" type="text" name="medication" required>
+                        <input class="text-input text-input--material" placeholder="Medication" type="text" name="medication"
+                            required>
                     </p>
                     <p>
-                        <input class="text-input text-input--material" placeholder="Time" type="text" name="time" required>
+                        <input class="text-input text-input--material" placeholder="Time" type="text" name="time"
+                            required>
                     </p>
                     <p style="margin-top: 30px;">
                         <button class="button" type="submit">Save Reminder</button>
@@ -50,38 +62,36 @@
             </form>
 
             <% if (medications) { %>
-                <ons-list>
+            <ons-list>
 
-                    <% for(var i=0; i<medications.length; i++) {%>
+                <% for(var i=0; i<medications.length; i++) {%>
 
-                        <ons-list-item>
+                <ons-list-item>
 
-                            <div class="list-item__center list-item--material__center">
-                                <div class="list-item__title list-item--material__title">
-                                    <%= medications[i].medication %>
-                                </div>
-                                <div class="list-item__subtitle list-item--material__subtitle">
-                                    <%= medications[i].time %>
-                                </div>
-                            </div>
+                    <div class="list-item__center list-item--material__center">
+                        <div class="list-item__title list-item--material__title">
+                            <%= medications[i].medication %>
+                        </div>
+                        <div class="list-item__subtitle list-item--material__subtitle">
+                            <%= medications[i].time %>
+                        </div>
+                    </div>
 
-                            <div class="list-item__right list-item--material__right">
-                                <button class="delete button button--outline" onclick="deleteMedication(this.value)" value='<%= medications[i]._id %>' alt='<%= medications[i].userId %>'>
-                                    Forget </button>
-                            </div>
-                        </ons-list-item>
+                    <div class="list-item__right list-item--material__right">
+                        <button class="delete button button--outline" onclick="deleteMedication(this.value)" value='<%= medications[i]._id %>'
+                            alt='<%= medications[i].userId %>'>
+                            Forget </button>
+                    </div>
+                </ons-list-item>
 
-                        <% } %>
-                </ons-list>
                 <% } %>
-
-
+            </ons-list>
+            <% } %>
         </ons-page>
     </template>
 
     <template id="tab2.html">
         <ons-page id="Tab2">
-
             <center>
                 <h3 style="margin: 30px; text-align:center; color:lightgray">
                     <!--<i>"An apple a day, keeps the doctor away."</i>-->
@@ -108,11 +118,104 @@
                 </ons-list-item>
                 <a class="button--large--cta" type="button" href="/logout">Logout</a>
             </ons-list>
+            <br />
+        </ons-page>
+    </template>
 
-            <br/>
+    <template id="tab3.html">
+        <ons-page id="Tab3">
+            <form action="/register" method="post">
+                <ons-list>
+                    <ons-list-item>
+                        <div class="center">
+                            <input class="text-input text-input--material" type="text" name="email" placeholder="E-mail"
+                                required="">
+                        </div>
+                    </ons-list-item>
 
+                    <ons-list-item>
+                        <div class="center">
+                            <input class="text-input text-input--material" type="text" name="username" placeholder="Username"
+                                required="">
+                        </div>
+                    </ons-list-item>
 
+                    <ons-list-item>
+                        <div class="center">
+                            <input class="text-input text-input--material" type="text" name="cpf" placeholder="CPF"
+                                required="">
+                        </div>
+                    </ons-list-item>
 
+                    <ons-list-item>
+                        <div class="center">
+                            <input class="text-input text-input--material" type="text" name="rg" placeholder="RG"
+                                required="">
+                        </div>
+                    </ons-list-item>
+
+                    <ons-list-item>
+                        <div class="center">
+                            <input class="text-input text-input--material" type="password" name="password" placeholder="Password"
+                                required="">
+                        </div>
+                    </ons-list-item>
+
+                    <ons-list-item>
+                        <div class="center">
+                            <input class="text-input text-input--material" type="password" name="passwordConf"
+                                placeholder="Confirm Password" required="">
+                        </div>
+                    </ons-list-item>
+
+                    <ons-list-item>
+                        <div class="center">
+                            <!-- <input class="number-input text-input--material" type="number" min="1" max="2" name="perfil"
+                                            placeholder="Perfil" required=""> -->
+
+                            <select class="select-input select-input--underbar" name="perfil">
+                                <option value=1>Admin</option>
+                                <option value=2>Usuário</option>
+                            </select>
+                        </div>
+                    </ons-list-item>
+
+                    <input class="button--large--cta" type="submit" value="Register">
+                </ons-list>
+            </form>
+        </ons-page>
+    </template>
+
+    <template id="tab4.html">
+        <ons-page id="Tab4">
+            <% if (users) { %>
+            <ons-list>
+                <% for(var i=0; i<users.length; i++) {%>
+                <ons-list-item>
+                    <div class="list-item__center list-item--material__center">
+                        <div class="list-item__title list-item--material__title">
+                            <%= users[i].username %>
+                        </div>
+                        <div class="list-item__subtitle list-item--material__subtitle">
+                            E-mail: <%= users[i].email %>
+                        </div>
+                        <div class="list-item__subtitle list-item--material__subtitle">
+                            CPF: <%= users[i].cpf %>
+                        </div>
+                        <div class="list-item__subtitle list-item--material__subtitle">
+                            RG: <%= users[i].rg %>
+                        </div>
+                    </div>
+                    <div class="list-item__right list-item--material__right">
+                            <button class="delete button button--outline" onclick="deleteUser(this.value)" value='<%= users[i]._id %>'
+                                alt='<%= users[i].userId %>'>
+                                Remove </button>
+                        </div>
+                </ons-list-item>
+
+                <% } %>
+            </ons-list>
+            <% } %>
         </ons-page>
     </template>
 
